@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hijri-Gregorian Date Converter</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            margin: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #1a2a6c;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .converter {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .date-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .date-box h2 {
+            color: #1a2a6c;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #fdbb2d;
+            padding-bottom: 8px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        
+        button {
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .result {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-weight: 600;
+            text-align: center;
+            color: #1a2a6c;
+            border: 1px dashed #1a2a6c;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .add-days {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .add-days h2 {
+            color: #1a2a6c;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #fdbb2d;
+            padding-bottom: 8px;
+        }
+        
+        .day-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+        
+        .day-btn {
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            padding: 10px 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .day-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .info {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        
+        .info h2 {
+            color: #1a2a6c;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #fdbb2d;
+            padding-bottom: 8px;
+        }
+        
+        .info p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .converter {
+                grid-template-columns: 1fr;
+            }
+            
+            .day-buttons {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hijri-Gregorian Date Converter</h1>
+        <p class="subtitle">Convert between Islamic and Western calendars with ease</p>
+        
+        <div class="converter">
+            <div class="date-box">
+                <h2>Gregorian Date</h2>
+                <div class="input-group">
+                    <label for="gregorian-date">Select Date:</label>
+                    <input type="date" id="gregorian-date">
+                </div>
+                <button id="to-hijri">Convert to Hijri</button>
+                <div class="result" id="hijri-result">-</div>
+            </div>
+            
+            <div class="date-box">
+                <h2>Hijri Date</h2>
+                <div class="input-group">
+                    <label for="hijri-year">Year:</label>
+                    <input type="number" id="hijri-year" min="1300" max="1500" value="1445">
+                </div>
+                <div class="input-group">
+                    <label for="hijri-month">Month:</label>
+                    <select id="hijri-month">
+                        <option value="1">Muharram</option>
+                        <option value="2">Safar</option>
+                        <option value="3">Rabi' al-Awwal</option>
+                        <option value="4">Rabi' al-Thani</option>
+                        <option value="5">Jumada al-Awwal</option>
+                        <option value="6">Jumada al-Thani</option>
+                        <option value="7">Rajab</option>
+                        <option value="8">Sha'ban</option>
+                        <option value="9">Ramadan</option>
+                        <option value="10">Shawwal</option>
+                        <option value="11">Dhu al-Qi'dah</option>
+                        <option value="12">Dhu al-Hijjah</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="hijri-day">Day:</label>
+                    <input type="number" id="hijri-day" min="1" max="30" value="1">
+                </div>
+                <button id="to-gregorian">Convert to Gregorian</button>
+                <div class="result" id="gregorian-result">-</div>
+            </div>
+        </div>
+        
+        <div class="add-days">
+            <h2>Add Days to Current Date</h2>
+            <div class="day-buttons">
+                <button class="day-btn" data-days="30">+30 Days</button>
+                <button class="day-btn" data-days="60">+60 Days</button>
+                <button class="day-btn" data-days="90">+90 Days</button>
+                <button class="day-btn" data-days="180">+180 Days</button>
+                <button class="day-btn" data-days="365">+365 Days</button>
+            </div>
+            <div class="result" id="add-days-result">-</div>
+        </div>
+        
+        <div class="info">
+            <h2>About the Calendars</h2>
+            <p><strong>Gregorian Calendar:</strong> The solar calendar used in most of the world, introduced by Pope Gregory XIII in 1582.</p>
+            <p><strong>Hijri Calendar:</strong> The Islamic lunar calendar consisting of 12 months in a year of 354 or 355 days. It begins with the migration of Prophet Muhammad from Mecca to Medina.</p>
+            <p><strong>Note:</strong> This converter uses approximate calculations. For precise religious dates, consult official Islamic authorities.</p>
+        </div>
+    </div>
+
+    <script>
+        // Set default date to today
+        document.getElementById('gregorian-date').valueAsDate = new Date();
+        
+        // Convert Gregorian to Hijri
+        document.getElementById('to-hijri').addEventListener('click', function() {
+            const gregorianDate = new Date(document.getElementById('gregorian-date').value);
+            if (isNaN(gregorianDate.getTime())) {
+                document.getElementById('hijri-result').textContent = 'Please select a valid date';
+                return;
+            }
+            
+            // Simple approximation for conversion (not astronomically precise)
+            const hijriDate = convertToHijri(gregorianDate);
+            document.getElementById('hijri-result').textContent = hijriDate;
+        });
+        
+        // Convert Hijri to Gregorian
+        document.getElementById('to-gregorian').addEventListener('click', function() {
+            const hijriYear = parseInt(document.getElementById('hijri-year').value);
+            const hijriMonth = parseInt(document.getElementById('hijri-month').value);
+            const hijriDay = parseInt(document.getElementById('hijri-day').value);
+            
+            if (isNaN(hijriYear) || isNaN(hijriMonth) || isNaN(hijriDay)) {
+                document.getElementById('gregorian-result').textContent = 'Please enter valid Hijri date';
+                return;
+            }
+            
+            // Simple approximation for conversion (not astronomically precise)
+            const gregorianDate = convertToGregorian(hijriYear, hijriMonth, hijriDay);
+            document.getElementById('gregorian-result').textContent = gregorianDate.toDateString();
+        });
+        
+        // Add days functionality
+        document.querySelectorAll('.day-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const daysToAdd = parseInt(this.getAttribute('data-days'));
+                const currentDate = new Date();
+                const newDate = new Date(currentDate);
+                newDate.setDate(currentDate.getDate() + daysToAdd);
+                
+                // Convert to Hijri as well
+                const hijriDate = convertToHijri(newDate);
+                
+                document.getElementById('add-days-result').innerHTML = 
+                    `Gregorian: ${newDate.toDateString()}<br>Hijri: ${hijriDate}`;
+            });
+        });
+        
+        // Simple conversion functions (approximations)
+        function convertToHijri(gregorianDate) {
+            // This is a simplified conversion - not astronomically accurate
+            // For precise conversion, a more complex algorithm is needed
+            const epoch = new Date(622, 6, 16); // July 16, 622 CE (start of Hijri calendar)
+            const diffTime = gregorianDate - epoch;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            // Approximate Hijri year (354.367 days per year)
+            let hijriYears = Math.floor(diffDays / 354.367);
+            let remainingDays = diffDays - (hijriYears * 354.367);
+            
+            // Approximate Hijri months
+            const hijriMonths = [30, 59, 89, 118, 148, 177, 207, 236, 266, 295, 325];
+            let hijriMonth = 0;
+            for (let i = 0; i < hijriMonths.length; i++) {
+                if (remainingDays < hijriMonths[i]) {
+                    hijriMonth = i + 1;
+                    break;
+                }
+            }
+            
+            if (hijriMonth === 0) hijriMonth = 12;
+            
+            // Calculate day
+            const prevMonthDays = hijriMonth > 1 ? hijriMonths[hijriMonth - 2] : 0;
+            const hijriDay = Math.floor(remainingDays - prevMonthDays) + 1;
+            
+            const hijriYear = 1 + hijriYears;
+            
+            // Format month name
+            const monthNames = [
+                "Muharram", "Safar", "Rabi' al-Awwal", "Rabi' al-Thani",
+                "Jumada al-Awwal", "Jumada al-Thani", "Rajab", "Sha'ban",
+                "Ramadan", "Shawwal", "Dhu al-Qi'dah", "Dhu al-Hijjah"
+            ];
+            
+            return `${hijriDay} ${monthNames[hijriMonth-1]} ${hijriYear} AH`;
+        }
+        
+        function convertToGregorian(hijriYear, hijriMonth, hijriDay) {
+            // This is a simplified conversion - not astronomically accurate
+            // For precise conversion, a more complex algorithm is needed
+            const epoch = new Date(622, 6, 16); // July 16, 622 CE (start of Hijri calendar)
+            
+            // Calculate total days since epoch
+            let totalDays = (hijriYear - 1) * 354.367;
+            
+            // Add days for completed months
+            const monthDays = [0, 30, 59, 89, 118, 148, 177, 207, 236, 266, 295, 325];
+            if (hijriMonth > 1) {
+                totalDays += monthDays[hijriMonth - 2];
+            }
+            
+            // Add days in current month
+            totalDays += hijriDay - 1;
+            
+            // Calculate Gregorian date
+            const gregorianDate = new Date(epoch);
+            gregorianDate.setDate(epoch.getDate() + Math.floor(totalDays));
+            
+            return gregorianDate;
+        }
+    </script>
+</body>
+</html>
