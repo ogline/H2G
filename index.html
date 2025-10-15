@@ -25,7 +25,7 @@
         .container {
             max-width: 800px;
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             padding: 30px;
@@ -139,6 +139,7 @@
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 10px;
+            margin-top: 15px;
         }
         
         .day-btn {
@@ -214,18 +215,18 @@
                 <div class="input-group">
                     <label for="hijri-month">Month:</label>
                     <select id="hijri-month">
-                        <option value="1">Muharram</option>
-                        <option value="2">Safar</option>
-                        <option value="3">Rabi' al-Awwal</option>
-                        <option value="4">Rabi' al-Thani</option>
-                        <option value="5">Jumada al-Awwal</option>
-                        <option value="6">Jumada al-Thani</option>
-                        <option value="7">Rajab</option>
-                        <option value="8">Sha'ban</option>
-                        <option value="9">Ramadan</option>
-                        <option value="10">Shawwal</option>
-                        <option value="11">Dhu al-Qi'dah</option>
-                        <option value="12">Dhu al-Hijjah</option>
+                        <option value="1">1 - Muharram</option>
+                        <option value="2">2 - Safar</option>
+                        <option value="3">3 - Rabi' al-Awwal</option>
+                        <option value="4">4 - Rabi' al-Thani</option>
+                        <option value="5">5 - Jumada al-Awwal</option>
+                        <option value="6">6 - Jumada al-Thani</option>
+                        <option value="7">7 - Rajab</option>
+                        <option value="8">8 - Sha'ban</option>
+                        <option value="9">9 - Ramadan</option>
+                        <option value="10">10 - Shawwal</option>
+                        <option value="11">11 - Dhu al-Qi'dah</option>
+                        <option value="12">12 - Dhu al-Hijjah</option>
                     </select>
                 </div>
                 <div class="input-group">
@@ -238,7 +239,11 @@
         </div>
         
         <div class="add-days">
-            <h2>Add Days to Current Date</h2>
+            <h2>Add Days to Selected Date</h2>
+            <div class="input-group">
+                <label for="add-days-date">Select Base Date:</label>
+                <input type="date" id="add-days-date">
+            </div>
             <div class="day-buttons">
                 <button class="day-btn" data-days="30">+30 Days</button>
                 <button class="day-btn" data-days="60">+60 Days</button>
@@ -258,8 +263,10 @@
     </div>
 
     <script>
-        // Set default date to today
-        document.getElementById('gregorian-date').valueAsDate = new Date();
+        // Set default dates to today
+        const today = new Date();
+        document.getElementById('gregorian-date').valueAsDate = today;
+        document.getElementById('add-days-date').valueAsDate = today;
         
         // Convert Gregorian to Hijri
         document.getElementById('to-hijri').addEventListener('click', function() {
@@ -294,9 +301,16 @@
         document.querySelectorAll('.day-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const daysToAdd = parseInt(this.getAttribute('data-days'));
-                const currentDate = new Date();
-                const newDate = new Date(currentDate);
-                newDate.setDate(currentDate.getDate() + daysToAdd);
+                const baseDateInput = document.getElementById('add-days-date').value;
+                
+                if (!baseDateInput) {
+                    document.getElementById('add-days-result').textContent = 'Please select a base date first';
+                    return;
+                }
+                
+                const baseDate = new Date(baseDateInput);
+                const newDate = new Date(baseDate);
+                newDate.setDate(baseDate.getDate() + daysToAdd);
                 
                 // Convert to Hijri as well
                 const hijriDate = convertToHijri(newDate);
